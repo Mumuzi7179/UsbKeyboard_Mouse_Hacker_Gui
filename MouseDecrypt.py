@@ -63,6 +63,12 @@ class MouseDecryptWindow(QWidget):
         self.button_layout.addWidget(self.save_button)
         self.save_button.setStyleSheet(stylesheet)
 
+        self.all_button = QPushButton("一键保存全部")
+        self.all_button.clicked.connect(self.all_command)
+        self.all_button.setFixedSize(120, 40)  # 设置固定大小
+        self.button_layout.addWidget(self.all_button)
+        self.all_button.setStyleSheet(stylesheet)
+
         self.layout.addLayout(self.button_layout)
 
         # 输出窗口
@@ -119,9 +125,9 @@ class MouseDecryptWindow(QWidget):
 
         # 检查是否选择了执行类型和鼠标按键以及文件
         if checked_button_type:
-            type = checked_button_type.text()
+            _type = checked_button_type.text()
         else:
-            type = None
+            _type = None
 
         if checked_button_key:
             key = checked_button_key.text()
@@ -132,7 +138,7 @@ class MouseDecryptWindow(QWidget):
             self.output.append("错误：没有选择文件。")
             return
 
-        if not type:
+        if not _type:
             self.output.append("错误：没有选择执行类型。")
             return
 
@@ -140,24 +146,55 @@ class MouseDecryptWindow(QWidget):
             self.output.append("错误：没有选择鼠标按键。")
             return
 
-        self.output.append(f"执行的类型： {type}")
+        self.output.append(f"执行的类型： {_type}")
         self.output.append(f"选择的鼠标按键： {key}")
         self.output.append("正在执行，若文件较大可能会出现无响应情况，请稍后……")
 
         QApplication.processEvents()
 
         try:
-            result = extract_data(type, key, self.file)
+            result = extract_data(_type, key, self.file)
         except Exception as e:
             self.output.append(f"执行出错：{e}")
         else:
             self.output.append("执行成功。")
             self.output.append("已将转换后的坐标写入result.txt，如有需要可自行利用")
-            self.output.append(f"已将图片保存至当前环境运行目录下的{key}.png")
+            self.output.append(f"已将图片保存至当前环境运行目录下的output_files文件夹中的{_type}_{key}.png")
             time.sleep(0.5)
-            result.savefig(f"{key}.png")
+            if not os.path.exists('output_files'):
+                os.mkdir('output_files')
+            result.savefig(f"./output_files/{_type}_{key}.png")
             if not from_save_button:
-                os.system(f"{key}.png")
+                os.system(f"./output_files/{_type}_{key}.png")
+
+    def all_command(self):
+        self.output.clear()
+
+        # 输出当前时间
+        current_time = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+        self.output.append(f"{current_time}")
+
+        if not self.file:
+            self.output.append("错误：没有选择文件。")
+            return
+
+        self.output.append("正在执行，若文件较大可能会出现无响应情况，请稍后……")
+        QApplication.processEvents()
+        for _type in ['capdata','usbhid']:
+            for key in ['左键','右键','无按键','所有']:
+                try:
+                    result = extract_data(_type, key, self.file)
+                except Exception as e:
+                    self.output.append(f"执行出错：{e}")
+                else:
+                    self.output.append("执行成功。")
+                    self.output.append(f"已将图片保存至当前环境运行目录下的output_files文件夹中的{_type}_{key}.png")
+                    QApplication.processEvents()
+                    time.sleep(0.1)
+                    if not os.path.exists('output_files'):
+                        os.mkdir('output_files')
+                    result.savefig(f"./output_files/{_type}_{key}.png")
+
 
 def load_stylesheet(filename):
     with open(filename, "r") as f:
