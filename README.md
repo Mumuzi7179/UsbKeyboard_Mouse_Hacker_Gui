@@ -18,6 +18,8 @@
 
 ## 使用帮助
 
+**首先要将tshark.exe所在的文件夹添加到环境变量path下，例如作者tshark.exe在D:\\wireshark下，需要打开环境变量--Path--新建--D:\\wireshark\\**
+
 使用python3执行run_GUI.py加载
 
 ```shell
