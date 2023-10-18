@@ -22,11 +22,15 @@ class KeyboardDecryptWindow(QWidget):
         self.button_group = QButtonGroup(self)
         self.select_type1 = QRadioButton("capdata")
         self.select_type2 = QRadioButton("usbhid")
+        self.select_type3 = QRadioButton("bluetooth")
 
         self.button_group.addButton(self.select_type1)
         self.button_group.addButton(self.select_type2)
+        self.button_group.addButton(self.select_type3)
         self.type_layout.addWidget(self.select_type1)
         self.type_layout.addWidget(self.select_type2)
+        self.type_layout.addWidget(self.select_type3)
+        
         # 确定按钮
         self.run_button = QPushButton("点击执行")
         stylesheet = load_stylesheet("./css/style.css")
