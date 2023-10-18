@@ -6,7 +6,7 @@ shiftKeys = {"04":"A", "05":"B", "06":"C", "07":"D", "08":"E", "09":"F", "0a":"G
 
 def extract_data(types,filename):
     presses = []
-    type_dicts = {"capdata": "usb.capdata", "usbhid": "usbhid.data"}
+    type_dicts = {"capdata": "usb.capdata", "usbhid": "usbhid.data","bluetooth":"btatt.value"}
     mytype = type_dicts[types]
 
     os.system(f'tshark.exe -r "{filename}" -T fields -e {mytype}  > usb.dat')
