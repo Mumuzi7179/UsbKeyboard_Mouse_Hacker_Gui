@@ -16,6 +16,8 @@ def extract_data(types,filename):
     result = ""
     result_data = []
     for press in presses:
+        if(len(press)>21):
+            press = press[2:18]
         try:
             if press == '':
                 continue
