@@ -16,21 +16,24 @@ def extract_data(types,filename):
     result = ""
     result_data = []
     for press in presses:
-        if press == '':
-            continue
-        if ':' in press:
-            Bytes = press.split(":")
-        else:
-            Bytes = [press[i:i+2] for i in range(0, len(press), 2)]
-        if Bytes[0] == "00":
-            if Bytes[2] != "00" and normalKeys.get(Bytes[2]):
-                result += normalKeys[Bytes[2]]
-                result_data.append(normalKeys[Bytes[2]])
-        elif int(Bytes[0],16) & 0b10 or int(Bytes[0],16) & 0b100000:
-            if Bytes[2] != "00" and normalKeys.get(Bytes[2]):
-                result += shiftKeys[Bytes[2]]
-                result_data.append(shiftKeys[Bytes[2]])
-        else:
+        try:
+            if press == '':
+                continue
+            if ':' in press:
+                Bytes = press.split(":")
+            else:
+                Bytes = [press[i:i+2] for i in range(0, len(press), 2)]
+            if Bytes[0] == "00":
+                if Bytes[2] != "00" and normalKeys.get(Bytes[2]):
+                    result += normalKeys[Bytes[2]]
+                    result_data.append(normalKeys[Bytes[2]])
+            elif int(Bytes[0],16) & 0b10 or int(Bytes[0],16) & 0b100000:
+                if Bytes[2] != "00" and normalKeys.get(Bytes[2]):
+                    result += shiftKeys[Bytes[2]]
+                    result_data.append(shiftKeys[Bytes[2]])
+            else:
+                pass
+        except:
             pass
 
     return result,result_data
